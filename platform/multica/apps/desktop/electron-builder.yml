@@ -1,0 +1,45 @@
+appId: ai.multica.desktop
+productName: Multica
+directories:
+  buildResources: build
+files:
+  - "!**/.vscode/*"
+  - "!src/*"
+  - "!electron.vite.config.*"
+  - "!{.eslintignore,.eslintrc.cjs,.prettierignore,.prettierrc.yaml,dev-app-update.yml,CHANGELOG.md,README.md}"
+  - "!{tsconfig.json,tsconfig.node.json,tsconfig.web.json}"
+protocols:
+  - name: Multica
+    schemes:
+      - multica
+asarUnpack:
+  - resources/**
+mac:
+  entitlementsInherit: build/entitlements.mac.plist
+  target:
+    - dmg
+    - zip
+  # Hardcoded name avoids the `@multica/desktop-*` subdirectory that
+  # `${name}` produces for scoped package names.
+  artifactName: multica-desktop-${version}-${arch}.${ext}
+  # Notarize via notarytool. Requires APPLE_ID + APPLE_APP_SPECIFIC_PASSWORD
+  # + APPLE_TEAM_ID env vars at package time. Non-mac contributors are
+  # unaffected because `pnpm package` already requires the Developer ID
+  # signing cert — notarization is a strict superset.
+  notarize: true
+dmg:
+  artifactName: multica-desktop-${version}-${arch}.${ext}
+linux:
+  target:
+    - AppImage
+    - deb
+  artifactName: ${name}-${version}-${arch}.${ext}
+win:
+  target:
+    - nsis
+  artifactName: ${name}-${version}-setup.${ext}
+publish:
+  provider: github
+  owner: multica-ai
+  repo: multica
+npmRebuild: false
